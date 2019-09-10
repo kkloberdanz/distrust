@@ -42,11 +42,11 @@ fn main() {
             .service(
                 web::scope("/greet")
                     .route("/", web::get().to(index))
-                    .route("/again", web::get().to(index2))
+                    .route("/again", web::get().to(index2)),
             )
             .service(
-                actix_files::Files::new("/static", ".")
-                    .show_files_listing())
+                actix_files::Files::new("/static", ".").show_files_listing(),
+            )
             .route("/", web::get().to(home))
     })
     .workers(16 * 4)
