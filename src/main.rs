@@ -17,8 +17,9 @@
 // Date: 09 Sep 2019
 
 use actix_files;
-use actix_web::{http, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{http, web, App, HttpResponse, HttpServer, Responder, HttpRequest};
 use http::StatusCode;
+use std::path::PathBuf;
 
 fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
@@ -42,6 +43,12 @@ fn redirect() -> impl Responder {
         .finish()
 }
 
+fn get_file(req: HttpRequest) -> actix_web::Result<actix_files::NamedFile> {
+    let path: PathBuf = req.match_info().query("filename").parse().unwrap();
+    println!("serving file: {:?}", path);
+    Ok(actix_files::NamedFile::open(path)?)
+}
+
 fn main() {
     println!("Hello, world!");
     HttpServer::new(|| {
@@ -55,10 +62,14 @@ fn main() {
             .service(
                 actix_files::Files::new("/static", ".").show_files_listing(),
             )
+            .service(
+                web::scope("/get")
+                    .route("/{filename:.*}", web::get().to(get_file))
+            )
             .route("/", web::get().to(home))
     })
     .workers(16 * 4)
-    .bind("0.0.0.0:8088")
+    .bind("0.0.0.0:8086")
     .unwrap()
     .run()
     .unwrap();

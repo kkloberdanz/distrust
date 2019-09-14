@@ -1,0 +1,9 @@
+Distrust
+1) Any node can answer any request
+2) Clients can recieve any file from any node
+3) If a node fails to respond in time, then the client will try
+   the next node, and so on.
+4) Nodes can go offline without interuption to the system and also
+   come online also without interuption to the system
+5) Files will be distributed across nodes such that multiple nodes
+   can fail without data loss or interuption of service
