@@ -25,14 +25,6 @@ use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
 
-fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
-
-fn index2() -> impl Responder {
-    HttpResponse::Ok().body("Hello world again!")
-}
-
 fn home() -> impl Responder {
     HttpResponse::Ok().body("Welcome")
 }
@@ -75,8 +67,6 @@ fn main() {
         App::new()
             .service(
                 web::scope("/greet")
-                    .route("/", web::get().to(index))
-                    .route("/again", web::get().to(index2))
                     .route("/redirect", web::get().to(redirect)),
             )
             .service(
