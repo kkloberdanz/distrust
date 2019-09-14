@@ -50,7 +50,7 @@ fn main() {
             .route("/", web::get().to(home))
     })
     .workers(16 * 4)
-    .bind("127.0.0.1:8088")
+    .bind("0.0.0.0:8088")
     .unwrap()
     .run()
     .unwrap();
