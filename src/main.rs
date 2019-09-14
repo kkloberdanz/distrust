@@ -22,6 +22,7 @@ use actix_web::{
 };
 use http::StatusCode;
 use std::path::PathBuf;
+use std::fs;
 
 fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
@@ -51,6 +52,17 @@ fn get_file(req: HttpRequest) -> actix_web::Result<actix_files::NamedFile> {
     Ok(actix_files::NamedFile::open(path)?)
 }
 
+fn put_file(req: HttpRequest) -> actix_web::Result<String> {
+    let path: PathBuf = req.match_info().query("filename").parse().unwrap();
+    println!("saving to file: {:?}", path);
+    println!("req = {:?}", req);
+
+    let file = fs::File::create(path)?;
+
+    let response = format!("uploaded");
+    Ok(response) // HttpResponse::Ok().body(response)
+}
+
 fn main() {
     println!("Hello, world!");
     HttpServer::new(|| {
@@ -67,6 +79,10 @@ fn main() {
             .service(
                 web::scope("/get")
                     .route("/{filename:.*}", web::get().to(get_file)),
+            )
+            .service(
+                web::scope("/put")
+                    .route("/{filename:.*}", web::put().to(put_file)),
             )
             .route("/", web::get().to(home))
     })
