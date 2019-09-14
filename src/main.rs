@@ -94,7 +94,7 @@ fn main() {
     })
     .workers(16 * 4)
     .bind("0.0.0.0:8086")
-    .unwrap()
+    .expect("failed to bind to address and port")
     .run()
-    .unwrap();
+    .expect("failed to run web server");
 }
