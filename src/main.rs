@@ -17,7 +17,8 @@
 // Date: 09 Sep 2019
 
 use actix_files;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{http, web, App, HttpResponse, HttpServer, Responder};
+use http::StatusCode;
 
 fn index() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
@@ -35,6 +36,12 @@ fn home() -> impl Responder {
     HttpResponse::Ok().body("Welcome")
 }
 
+fn redirect() -> impl Responder {
+    HttpResponse::TemporaryRedirect()
+        .header("Location", "https://www.youtube.com")
+        .finish()
+}
+
 fn main() {
     println!("Hello, world!");
     HttpServer::new(|| {
@@ -42,7 +49,8 @@ fn main() {
             .service(
                 web::scope("/greet")
                     .route("/", web::get().to(index))
-                    .route("/again", web::get().to(index2)),
+                    .route("/again", web::get().to(index2))
+                    .route("/redirect", web::get().to(redirect)),
             )
             .service(
                 actix_files::Files::new("/static", ".").show_files_listing(),
