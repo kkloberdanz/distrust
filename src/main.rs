@@ -17,7 +17,9 @@
 // Date: 09 Sep 2019
 
 use actix_files;
-use actix_web::{http, web, App, HttpResponse, HttpServer, Responder, HttpRequest};
+use actix_web::{
+    http, web, App, HttpRequest, HttpResponse, HttpServer, Responder,
+};
 use http::StatusCode;
 use std::path::PathBuf;
 
@@ -64,7 +66,7 @@ fn main() {
             )
             .service(
                 web::scope("/get")
-                    .route("/{filename:.*}", web::get().to(get_file))
+                    .route("/{filename:.*}", web::get().to(get_file)),
             )
             .route("/", web::get().to(home))
     })
