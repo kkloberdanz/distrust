@@ -62,9 +62,8 @@ fn put_file(
             Ok::<_, Error>(body)
         })
         .and_then(|body| {
-            format!("Body {:?}!", body);
-            println!("body = {:?}", body);
-            let mut file = fs::File::create(path).unwrap();
+            let mut file =
+                fs::File::create(path).expect("failed to open file");
             file.write_all(&body).expect("failed to write");
             Ok(HttpResponse::Ok().finish())
         })
