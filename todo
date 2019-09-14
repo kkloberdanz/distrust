@@ -1,0 +1,2 @@
+1) Allow directory creation if directory does not exist
+2) Stream file uploads to disk rather than loading everything into memory
