@@ -1,0 +1,19 @@
+version: '3'
+services:
+  distrust:
+    build: .
+    networks:
+      - web_distrust_nw
+  nginx:
+    image: "nginx:mainline-alpine"
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - web_distrust_nw
+    depends_on: 
+      - distrust
+networks:
+  web_distrust_nw:
+    driver: bridge
