@@ -13,3 +13,5 @@ actix-multipart = "0.1.1"
 
 env_logger = "0.6"
 futures = "0.1.25"
+
+rusqlite = "0.20"
