@@ -15,6 +15,7 @@
 //
 // Programmer: Kyle Kloberdanz
 // Date: 09 Sep 2019
+extern crate rusqlite;
 
 use actix_files;
 use actix_web::{
@@ -24,6 +25,8 @@ use futures::{Future, Stream};
 use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
+use rusqlite::{Connection, Result};
+use rusqlite::NO_PARAMS;
 
 fn home() -> impl Responder {
     HttpResponse::Ok().body("Welcome")
@@ -61,6 +64,26 @@ fn put_file(
         })
 }
 
+fn create_database() -> impl Responder{
+    let conn = Connection::open("metadata.db").expect("Something really bad happened, I can't see db file");
+
+    conn.execute("
+        create table if not exists files 
+        (
+            id           INTEGER  PRIMARY KEY AUTOINCREMENT,
+            name         STRING,
+            path         STRING,
+            hash         BLOB,
+            dateCreated  DATETIME DEFAULT (CURRENT_TIMESTAMP),
+            lastModified DATETIME DEFAULT (CURRENT_TIMESTAMP),
+            permissions  INTEGER  DEFAULT (777),
+            user         INTEGER  DEFAULT (1)
+        );
+    ",        NO_PARAMS,
+    ).expect("Something Bad Happened!, Table files failed to create");
+    HttpResponse::Ok().body("Done")
+}
+
 fn main() {
     println!("Hello, world!");
     HttpServer::new(|| {
@@ -80,6 +103,7 @@ fn main() {
                 web::scope("/put")
                     .route("/{filename:.*}", web::put().to_async(put_file)),
             )
+            .route("/dml-create", web::get().to(create_database))
             .route("/", web::get().to(home))
     })
     .workers(16 * 4)
